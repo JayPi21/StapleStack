@@ -4,32 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>StapleStack — Cart-to-Complete</title>
-  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="stylesheet" href="/static/css/tokens.css" />
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/components.css" />
 </head>
 <body>
 
 <header class="topbar">
-  <div class="brand">
+  <a class="brand" href="/">
     <span class="brand-mark">S</span>
-    <span class="brand-name">StaplesAdvantage</span>
-    <span class="brand-sub">Breakroom · Coffee</span>
-  </div>
+    <span class="brand-names">
+      <span class="brand-name">StaplesAdvantage</span>
+      <span class="brand-sub">Breakroom · Coffee</span>
+    </span>
+  </a>
 
-  <div class="persona-switch" id="personaSwitch"></div>
+  <div class="account">
+    <span class="account-label">Signed in as</span>
+    <div class="persona-switch" id="personaSwitch" role="tablist"></div>
+  </div>
 </header>
 
 <main class="layout">
 
-  <!-- ---------- catalog ---------- -->
-  <section class="col-catalog">
+  <section class="col-main">
     <div class="section-head">
-      <h1>Coffee</h1>
-      <p class="muted" id="catalogCount"></p>
+      <div>
+        <h1 id="catalogTitle">Coffee</h1>
+        <p class="muted" id="catalogSub"></p>
+      </div>
+      <button class="link-btn" id="showAllBtn" hidden>Show all products</button>
+    </div>
+
+    <div class="kit-filter-note" id="kitFilterNote" hidden>
+      <span class="dot-accent"></span>
+      <span id="kitFilterText"></span>
     </div>
 
     <div class="machines" id="machines"></div>
 
-    <div class="rest">
+    <div class="catalog-rest" id="catalogRest">
       <div class="rest-head">
         <h2>Everything else on contract</h2>
         <span class="pill" id="restCount"></span>
@@ -38,71 +52,72 @@
     </div>
   </section>
 
-  <!-- ---------- cart + kit ---------- -->
   <aside class="col-side">
 
-    <div class="card cart-card">
+    <section class="card" aria-labelledby="cartHeading">
       <div class="card-head">
-        <h2>Cart</h2>
+        <h2 id="cartHeading">Your cart</h2>
         <span class="pill" id="cartCount">0</span>
       </div>
-      <div id="cartLines" class="cart-lines">
-        <p class="empty">Your cart is empty.</p>
-      </div>
-      <div class="cart-total">
-        <span>Subtotal</span>
-        <strong id="cartTotal">$0.00</strong>
-      </div>
-    </div>
+      <div id="cartLines" class="cart-lines"></div>
+      <div class="cart-summary" id="cartSummary"></div>
+    </section>
 
-    <div class="card kit-card" id="kitCard" hidden>
-      <div class="card-head kit-head">
-        <div>
-          <h2>Cart-to-Complete</h2>
-          <div class="model-badge" id="modelBadge">
-            <span class="dot"></span>
-            <span id="modelName">Gemini</span>
-            <span class="sep">·</span>
-            <span class="timer" id="timer">0.0s</span>
+    <!-- The opt-in. Nothing about the kit renders until this is clicked. -->
+    <section class="cta-card" id="ctaCard" hidden>
+      <span class="cta-flag">New</span>
+      <h2 class="cta-title">Finish this setup automatically</h2>
+      <p class="cta-copy" id="ctaCopy"></p>
+      <button class="cta-btn" id="ctaBtn">
+        <span class="cta-btn-icon" aria-hidden="true">✦</span>
+        <span>Build my kit</span>
+      </button>
+      <p class="cta-foot">Includes an exclusive <strong id="ctaDiscount"></strong> bundle saving</p>
+    </section>
+
+    <section class="card kit-card" id="kitCard" hidden aria-labelledby="kitHeading">
+      <div class="card-head">
+        <h2 id="kitHeading">Your kit</h2>
+        <button class="ghost-btn" id="restartBtn" title="Start over" hidden>Start over</button>
+      </div>
+
+      <div class="thinking" id="thinking" hidden>
+        <div class="thinking-head">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="thinkingStatus">Looking at your cart…</span>
+        </div>
+        <ul class="thought-list" id="thoughtList"></ul>
+      </div>
+
+      <div class="kit-choices" id="kitChoices" hidden>
+        <div class="choice-grid" id="choiceGrid"></div>
+      </div>
+
+      <div class="kit-detail" id="kitDetail" hidden>
+        <div class="kit-detail-head">
+          <div>
+            <h3 id="kitName"></h3>
+            <p class="muted" id="kitSummary"></p>
           </div>
-        </div>
-        <button class="ghost" id="regenBtn" title="Regenerate">↻</button>
-      </div>
-
-      <div class="stream" id="stream"></div>
-
-      <div class="kit-body" id="kitBody" hidden>
-        <div class="kit-title">
-          <h3 id="kitName"></h3>
-          <p class="muted" id="kitSummary"></p>
-        </div>
-
-        <div class="scale-row">
-          <label for="scale">Sized for</label>
-          <input type="range" id="scale" min="1" max="40" value="1" />
-          <output id="scaleOut">1 person</output>
+          <button class="link-btn" id="switchKitBtn">Compare</button>
         </div>
 
         <ul class="kit-items" id="kitItems"></ul>
 
-        <div class="skips" id="skips" hidden>
-          <div class="skips-head">Deliberately left out</div>
+        <details class="skips" id="skips">
+          <summary>What we left out <span class="pill" id="skipCount"></span></summary>
           <ul id="skipItems"></ul>
-        </div>
+        </details>
 
-        <div class="kit-foot">
-          <div class="kit-total">
-            <span id="kitCountLabel"></span>
-            <strong id="kitTotal">$0.00</strong>
-          </div>
-          <button class="primary" id="addAllBtn">Add kit to cart</button>
-        </div>
+        <div class="totals" id="totals"></div>
+
+        <button class="primary-btn" id="addKitBtn">Add kit to cart</button>
       </div>
-    </div>
+    </section>
 
   </aside>
 </main>
 
-<script src="/static/app.js"></script>
+<script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

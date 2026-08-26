@@ -2,11 +2,12 @@
 
 *Add one item. Get the whole package, sized to you.*
 
-A buyer drops a coffee machine into a Staples cart. Gemini reads the cart and the 
-buyer's profile, and composes the **complete kit** that finishes the job — sized to who
-is actually buying, and scoped to the contracted catalog.
+A buyer drops a coffee machine into a Staples cart. The assistant reads the cart and
+the buyer's profile and composes the **complete set of supplies** that finishes the
+job — sized to who is actually buying, and scoped to the contracted catalog.
 
-Three demo buyers, one product category, one screen.
+Three demo buyers, one product category, one screen. Every product, price and photo is
+real staples.com data.
 
 ---
 
@@ -14,151 +15,181 @@ Three demo buyers, one product category, one screen.
 
 ```bash
 pip install -r requirements.txt
-python main.py
+python -m app
 ```
 
 Open <http://localhost:8080>.
 
-### Authenticate to Vertex AI (required for live AI)
+With Docker:
+
+```bash
+docker build -t staplestack . && docker run -p 8080:8080 staplestack
+```
+
+Tests:
+
+```bash
+pip install -r requirements-dev.txt
+pytest -q
+```
+
+### Sign in to Vertex AI
 
 ```bash
 gcloud auth application-default login
 gcloud config set project prj-spls-np-hackathon31-000
 ```
 
-The model badge in the Cart-to-Complete panel tells you which mode you are in:
+Credentials expire — corporate policies re-prompt periodically — so **re-run the first
+command on the day you record**. When the assistant is unreachable the app falls back
+to a built-in kit and says so in plain language on screen; the technical cause goes to
+the browser console and the server log, never to the shopper.
 
-| Badge | Meaning |
-|---|---|
-| 🟢 `gemini-3.7-flash · 2.4s` | Live Vertex AI call |
-| 🟡 `gemini-3.7-flash (offline sample)` | Vertex unreachable — deterministic local kit |
+Settings, all overridable by environment variable, live in [app/config.py](app/config.py):
 
-The offline mode exists so the demo never dies on stage, but it **labels itself**. If
-you see amber before recording, fix the auth — the panel also prints the exact reason
-on the first line of the stream.
-
-Override the defaults with env vars if needed:
-
-```bash
-GOOGLE_CLOUD_PROJECT=...      # default prj-spls-np-hackathon31-000
-VERTEX_LOCATION=...           # default global
-VERTEX_MODEL=...              # default gemini-3.7-flash
-VERTEX_THINKING_LEVEL=...     # default low - see below
-```
-
-### Why `thinking_level=low`
-
-Gemini 3 thinks before it emits a single token, and that wait is dead air on
-screen. Measured on this prompt:
-
-| thinking_level | time to first token | total |
+| Variable | Default | Purpose |
 |---|---|---|
-| `high` | 13.9s | 15.9s |
-| `low` | 6.3s | 8.7s |
+| `GOOGLE_CLOUD_PROJECT` | `prj-spls-np-hackathon31-000` | Vertex project |
+| `VERTEX_MODEL` | `gemini-3.7-flash` | Model id |
+| `VERTEX_THINKING_LEVEL` | `low` | See below |
+| `KIT_DISCOUNT_RATE` | `0.12` | Kit-exclusive bundle saving |
+| `PORT` | `8080` | HTTP port |
 
-Kit quality is indistinguishable between the two, so the demo runs `low`. This
-needs the current `google-genai` SDK — the older `vertexai.generative_models`
-SDK exposes no thinking controls at all (and is deprecated, removal June 2026).
+---
+
+## How the demo runs
+
+**1. The cart is just a machine.** Nothing else on screen. No kit, no panel.
+
+**2. An offer appears.** Once there is equipment to complete, a highlighted card slides
+in: *New — Finish this setup automatically*, naming the machine and the bundle saving.
+It pulses until clicked. Nothing about the kit is computed or shown until the buyer
+opts in — the assistant is offered, never imposed.
+
+**3. It reasons out loud, in plain English.** Ticks appear one at a time: *"This machine
+brews from pods, so it needs K-Cups rather than ground coffee."* No field names, no
+arithmetic notation, no model name, no stopwatch.
+
+**4. Two kits, not one.** *Essentials* — the shortest list that genuinely makes the
+machine work — against *Complete Station*, fully stocked. Each card shows its price,
+its saving and a strip of product thumbnails. The buyer chooses; the assistant does not
+decide for them. **Complete is always a superset of Essentials**, enforced by a test.
+
+**5. The catalog narrows to the kit.** Choosing a kit filters the whole product grid
+down to just those items, with a banner and a *Show all products* escape hatch. The
+screen stops being a catalog and becomes a shopping list.
+
+**6. Every line is editable.** Plus and minus on each row. Quantities and prices update
+live, dropping a line to zero marks it *Removed* and takes it out of the filtered
+catalog too. Rows patch in place rather than re-rendering, so the button never moves
+out from under the cursor mid-click.
+
+**7. The saving is kit-exclusive.** 12% comes off every line, shown struck-through per
+row and totalled as a *Kit only* saving. Add the kit and that saving carries into the
+cart summary — it exists only because the whole kit was taken together.
 
 ---
 
 ## The three buyers
 
-Switch with the chips in the top right. Switching resets the cart, so each take starts
-clean.
-
-| | **Maya Chen** | **Dan Okafor** | **Priya Rivera** |
+| | **Hari Prasad** | **Ravi Kumar** | **Umesh Nair** |
 |---|---|---|---|
-| Account | Individual | Individual | Business (Rivera & Co.) |
+| Account | Individual | Individual | Business (Nair & Co.) |
 | Serves | 1 person | 1 person | 12 people |
-| Machine | Keurig K-Elite single-serve | Keurig K-Elite single-serve | Bunn 12-cup drip brewer |
-| Sweetener | regular cane sugar | **sugar-free only** | sugar packets, bulk |
-| Kit shape | small packs, reusable mug | small packs, everything sugar-free | bulk cases, disposables |
+| Machine | Keurig K-Express | Keurig K-Express | Bunn VPR 12-Cup |
+| Sweetener | Domino sugar | **Splenda — sugar-free** | Domino sugar, bulk |
+| Creamer | Coffee mate regular | **Coffee mate Zero Sugar** | Coffee mate 180ct |
+| Drinkware | skipped — own mug | skipped — own mug | 1000 cups + lids |
 
-**Maya and Dan buy the same machine.** Everything that differs between their kits comes
-from the buyer profile, not the SKU. That is the sharpest evidence on screen that a kit
-is being reasoned about rather than looked up.
+**Hari and Ravi buy the same machine.** Everything that differs between their kits comes
+from the buyer profile, not the product. That is the sharpest evidence on screen that a
+kit is reasoned about rather than looked up.
 
-Personas live in [personas.json](personas.json) — edit the `profile` block to change how
-a buyer is sized. Nothing else needs to change; the profile is passed to the model
-verbatim.
-
----
-
-## How the AI shows itself
-
-The model returns **JSON Lines** — one object per line — streamed to the browser over
-SSE. Line-delimited JSON can't half-parse, so the stream stays robust under a live demo.
-
-```
-{"type":"thought","text":"K-Elite is single-serve — brews from pods, not grounds"}
-{"type":"thought","text":"Buyer avoids sugar — every sweetener must be sugar-free"}
-{"type":"kit","name":"Sugar-Free Desk Station","summary":"..."}
-{"type":"item","id":"PODS-KCUP-96","qty":1,"why":"84 cups over 4 weeks"}
-{"type":"skip","id":"CREAMER-JAR-16OZ","why":"original creamer contains sugar"}
-{"type":"done"}
-```
-
-Four things make this legible to an audience:
-
-1. **Reasoning arrives first, one line at a time**, with a blinking caret and a ticking
-   latency counter showing real elapsed time. Note that the model does its thinking up
-   front and then emits the whole answer in a ~2s burst, so the browser drains the
-   event queue at a readable cadence (`PACE` in `static/app.js`) instead of flashing
-   thirteen lines on screen at once. The content and the timer are the model's; only
-   the spacing between lines is ours.
-2. **Catalog tiles light up `IN KIT`** as the model picks them — you watch it reach into
-   the same catalog that's on screen.
-3. **Skips are shown, with reasons.** A pod machine takes no paper filter; a sugar-free
-   buyer gets no cane sugar. Knowing what to leave out is what a recommendation widget
-   cannot do.
-4. **The model never sees a price.** It chooses SKU ids and quantities only; names,
-   pack sizes, prices and totals are joined from `catalog.json` server-side in
-   [main.py](main.py). A hallucinated id is dropped rather than rendered.
+Buyers live in [data/personas.json](data/personas.json). Edit the `profile` block to
+change how one is sized — it is passed to the model verbatim, nothing else to change.
 
 ---
 
-## Layout
+## Architecture
 
 ```
-main.py          FastAPI. /api/bootstrap, /api/kit/stream (SSE). Joins model output to catalog truth.
-vertex_kit.py    Prompt, Vertex AI streaming call, JSONL parsing, offline fallback.
-catalog.json     24 coffee SKUs. The whole contracted catalog.
-personas.json    The three buyers.
-static/          index.html, app.js, styles.css
+app/
+  config.py        Typed settings, one source of truth, env-overridable
+  catalog.py       Catalog + persona data, pricing, discount, event decoration
+  schemas.py       Validated request models
+  main.py          App factory, routes, SSE framing
+  ai/
+    prompt.py      The prompt: two kits, plain-English reasoning
+    client.py      Vertex client, generation config, error shaping
+    stream.py      Streaming call + JSON Lines parsing
+    fallback.py    Deterministic offline kits
+data/              catalog.json, personas.json
+static/
+  css/             tokens, base, components
+  js/
+    store.js       Observable state; views subscribe, nothing mutates directly
+    api.js         fetch + SSE reader
+    ui/            personas, catalog, cart, kit
+    main.js        Controller: lifecycle, event wiring, pacing
+tests/             17 tests, no network
 ```
 
-The catalog is deliberately scoped to coffee and deliberately contains **traps**: cone
-filters and 1000-count urn filters that a pod machine must not be given, regular and
-sugar-free versions of every sweetener and creamer, and desk-sized versus case-sized
-packs of the same product. A correct kit is a real choice, not the only choice.
+**The model never sees a price and never sets one.** It returns product ids and
+quantities; names, packs, prices, line totals and the discount are all resolved from
+`catalog.json` in `catalog.py`. An unknown id is dropped and logged rather than
+rendered — there is a test asserting a model-supplied price is ignored.
+
+### Why thinking_level is low
+
+Gemini 3 thinks before emitting a token, and that wait is dead air. Measured on this
+prompt: `high` gave 13.9s to first token and 15.9s total; `low` gave 6.3s and 8.7s,
+with no observable difference in kit quality.
+
+### Why the browser paces the stream
+
+The model thinks first, then emits its whole answer in a roughly 2-second burst.
+Rendered raw, every line flashes on screen at once. The browser drains the event queue
+at a readable cadence (`PACE` in `static/js/main.js`). **The content is the model's;
+only the spacing between lines is ours.**
+
+---
+
+## The catalog is real
+
+Every product is a real staples.com item — name, SKU, price and photograph, captured
+2026-08-26. Images are bundled locally rather than hotlinked, so a recording never
+depends on the network.
+
+It is scoped to coffee and deliberately contains **traps**:
+
+- **Wrong brew type.** Bunn basket filters and Pike Place *ground* portion packs sit
+  next to the pods. A kit for the pod machine must refuse all of them.
+- **Sugar vs sugar-free.** Domino and Coffee mate French Vanilla against Splenda and
+  Coffee mate *Zero Sugar*. Only the buyer profile separates them.
+- **Desk vs bulk.** 24 vs 72 pods, 100 vs 400 Splenda, 50 vs 180 creamer, 50 vs 500
+  cups, 250 vs 1000 filters. The wrong one is never *wrong*, just wasteful.
+
+A correct kit is a real choice, not the only choice.
 
 ---
 
 ## Recording the demo
 
-Run at 1440×900 or larger, browser zoom 100%. One take per buyer, ~35 seconds each.
+Run at 1512x1000 or larger, browser zoom 100%. One take per buyer, about 40 seconds each.
 
-**Take 1 — Maya (the setup).** Land on the page. Pause on `RECOMMENDED FOR MAYA`.
-Click **Add to cart**. Let the reasoning stream run without talking over it — the
-latency counter is doing the work. Point at *"pod machine: paper filters would be dead
-weight"*, then at the struck-through `12-Cup Filters 1000ct` under **Deliberately left
-out**. Click **Add kit to cart**: one coffee maker becomes a finished coffee station.
+**Take 1 — Hari (the setup).** Land on the page. Add the recommended machine. Stop and
+let the *New* card pulse before clicking it — that beat sells the opt-in. Let the ticks
+land without talking over them. Point at the two kits, pick *Complete*, and watch the
+catalog collapse to just those products. Nudge a quantity up and down. Add the kit.
 
-**Take 2 — Dan (the payoff).** Switch to Dan. Same machine, same button. Then stop on
-the kit: Splenda instead of Domino, sugar-free creamer instead of original, and *cane
-sugar explicitly rejected* — "buyer avoids all added sugar". Nothing about the product
-changed. Only the buyer did.
+**Take 2 — Ravi (the payoff).** Same machine, same button. Then stop on the kit:
+Splenda where Hari got Domino, Zero Sugar creamer where Hari got regular, and Domino
+sugar explicitly under *What we left out*. Nothing about the product changed. Only the
+buyer did. This is the strongest ten seconds in the demo.
 
-**Take 3 — Priya (the scale).** Switch to Priya. The recommendation badge has moved to
-the Bunn brewer on its own. Add it. Now the arithmetic is visible in the stream —
-*12 × 2 × 28 = 672 cups* — and the kit comes back in cases: bulk grounds, 1000-count
-filters, 900 cups with matching lids, stir sticks, napkins. Drag the **Sized for**
-slider from 12 to 25 and let it regenerate live for the closing shot.
+**Take 3 — Umesh (the scale).** The recommendation has already moved to the Bunn.
+The reasoning now says *"Twelve people works out at about 672 cups, or 56 pots"*, and
+the kit comes back in cases. Open *What we left out* to show the pods rejected outright.
 
-If you want one continuous take instead, run the three buyers back to back without
-touching anything else — the reset-on-switch behaviour keeps it clean.
-
-Expect roughly 10 seconds per kit end to end, of which the first ~6 is the model
-thinking before it says anything. That gap is the one place the demo looks idle — the
-blinking caret and the ticking counter carry it, so don't cut away during it.
+Expect roughly 10 seconds per kit, of which the first 6 or so is the assistant thinking.
+The spinner and the ticks carry that gap — don't cut away during it.

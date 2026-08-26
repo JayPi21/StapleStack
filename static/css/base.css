@@ -1,0 +1,95 @@
+/* Reset, typography and page skeleton. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Author `display` rules otherwise beat the hidden attribute's UA style, which
+   left empty flex containers visible on screen. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.011em; }
+h1 { font-size: 24px; line-height: 1.25; }
+h2 { font-size: 15px; }
+h3 { font-size: 17px; line-height: 1.3; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+.muted { color: var(--ink-3); font-size: 13px; }
+
+img { max-width: 100%; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ---------------- top bar ---------------- */
+
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s6);
+  height: 66px; padding: 0 var(--s7);
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: var(--s3); text-decoration: none; color: inherit; }
+.brand-mark {
+  width: 32px; height: 32px; flex: none;
+  display: grid; place-items: center;
+  background: var(--red); color: #fff;
+  border-radius: var(--r-sm);
+  font-weight: 800; font-size: 18px;
+}
+.brand-names { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-weight: 650; font-size: 15px; letter-spacing: -0.015em; }
+.brand-sub { font-size: 12px; color: var(--ink-3); }
+
+.account { display: flex; align-items: center; gap: var(--s3); }
+.account-label { font-size: 12px; color: var(--muted); }
+
+/* ---------------- layout ---------------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: var(--s7);
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: var(--s7);
+  align-items: start;
+}
+
+.col-side {
+  display: flex; flex-direction: column; gap: var(--s4);
+  position: sticky; top: 90px;
+}
+
+.section-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s4); margin-bottom: var(--s5);
+}
+
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+  .col-side { position: static; }
+}
+@media (max-width: 640px) {
+  .topbar { height: auto; padding: var(--s3) var(--s4); flex-direction: column; align-items: stretch; }
+  .layout { padding: var(--s4); gap: var(--s5); }
+  .account { justify-content: space-between; }
+}
