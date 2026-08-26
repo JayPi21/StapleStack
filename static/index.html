@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StapleStack — Cart-to-Complete</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">StaplesAdvantage</span>
+    <span class="brand-sub">Breakroom · Coffee</span>
+  </div>
+
+  <div class="persona-switch" id="personaSwitch"></div>
+</header>
+
+<main class="layout">
+
+  <!-- ---------- catalog ---------- -->
+  <section class="col-catalog">
+    <div class="section-head">
+      <h1>Coffee</h1>
+      <p class="muted" id="catalogCount"></p>
+    </div>
+
+    <div class="machines" id="machines"></div>
+
+    <div class="rest">
+      <div class="rest-head">
+        <h2>Everything else on contract</h2>
+        <span class="pill" id="restCount"></span>
+      </div>
+      <div id="restGroups"></div>
+    </div>
+  </section>
+
+  <!-- ---------- cart + kit ---------- -->
+  <aside class="col-side">
+
+    <div class="card cart-card">
+      <div class="card-head">
+        <h2>Cart</h2>
+        <span class="pill" id="cartCount">0</span>
+      </div>
+      <div id="cartLines" class="cart-lines">
+        <p class="empty">Your cart is empty.</p>
+      </div>
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <strong id="cartTotal">$0.00</strong>
+      </div>
+    </div>
+
+    <div class="card kit-card" id="kitCard" hidden>
+      <div class="card-head kit-head">
+        <div>
+          <h2>Cart-to-Complete</h2>
+          <div class="model-badge" id="modelBadge">
+            <span class="dot"></span>
+            <span id="modelName">Gemini</span>
+            <span class="sep">·</span>
+            <span class="timer" id="timer">0.0s</span>
+          </div>
+        </div>
+        <button class="ghost" id="regenBtn" title="Regenerate">↻</button>
+      </div>
+
+      <div class="stream" id="stream"></div>
+
+      <div class="kit-body" id="kitBody" hidden>
+        <div class="kit-title">
+          <h3 id="kitName"></h3>
+          <p class="muted" id="kitSummary"></p>
+        </div>
+
+        <div class="scale-row">
+          <label for="scale">Sized for</label>
+          <input type="range" id="scale" min="1" max="40" value="1" />
+          <output id="scaleOut">1 person</output>
+        </div>
+
+        <ul class="kit-items" id="kitItems"></ul>
+
+        <div class="skips" id="skips" hidden>
+          <div class="skips-head">Deliberately left out</div>
+          <ul id="skipItems"></ul>
+        </div>
+
+        <div class="kit-foot">
+          <div class="kit-total">
+            <span id="kitCountLabel"></span>
+            <strong id="kitTotal">$0.00</strong>
+          </div>
+          <button class="primary" id="addAllBtn">Add kit to cart</button>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

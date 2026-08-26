@@ -1,0 +1,67 @@
+{
+  "personas": [
+    {
+      "id": "maya",
+      "label": "Maya Chen",
+      "initials": "MC",
+      "account_type": "Individual",
+      "account_line": "Personal account · Home office",
+      "headcount": 1,
+      "headcount_label": "1 person",
+      "recommended_machine": "MACHINE-KEURIG-KELITE",
+      "profile": {
+        "setting": "A single home-office desk. One person, no shared breakroom.",
+        "people_served": 1,
+        "cups_per_person_per_day": 2,
+        "restock_window_weeks": 4,
+        "takes_sweetener": "regular cane sugar",
+        "takes_creamer": "regular liquid creamer",
+        "drinkware": "has a reusable mug at the desk but wants a spare",
+        "storage": "kitchen fridge available, limited counter space",
+        "notes": "Not a procurement buyer. Wants the smallest pack that lasts a month, not a bulk case."
+      }
+    },
+    {
+      "id": "dan",
+      "label": "Dan Okafor",
+      "initials": "DO",
+      "account_type": "Individual",
+      "account_line": "Personal account · Home office",
+      "headcount": 1,
+      "headcount_label": "1 person",
+      "recommended_machine": "MACHINE-KEURIG-KELITE",
+      "profile": {
+        "setting": "A single home-office desk. One person, no shared breakroom.",
+        "people_served": 1,
+        "cups_per_person_per_day": 3,
+        "restock_window_weeks": 4,
+        "takes_sweetener": "sugar-free only - avoids all added sugar for dietary reasons",
+        "takes_creamer": "sugar-free creamer only - no added sugar",
+        "drinkware": "has a reusable mug at the desk but wants a spare",
+        "storage": "kitchen fridge available, limited counter space",
+        "notes": "Strictly avoids sugar. Any product containing sugar is unacceptable and must not be included in the kit."
+      }
+    },
+    {
+      "id": "priya",
+      "label": "Priya Rivera",
+      "initials": "PR",
+      "account_type": "Business",
+      "account_line": "Rivera & Co. · StaplesAdvantage contract",
+      "headcount": 12,
+      "headcount_label": "12 people",
+      "recommended_machine": "MACHINE-BUNN-12CUP",
+      "profile": {
+        "setting": "A shared breakroom at a 12-person small business. Office manager buying for the whole team.",
+        "people_served": 12,
+        "cups_per_person_per_day": 2,
+        "restock_window_weeks": 4,
+        "takes_sweetener": "mixed team preferences - stock regular sugar for the breakroom",
+        "takes_creamer": "mixed team preferences - shelf-stable singles are easier to share than a fridge bottle",
+        "drinkware": "shared breakroom, staff do not bring their own mugs - needs disposable cups",
+        "storage": "breakroom cabinet, small fridge shared by 12 people",
+        "notes": "Buying for a team, not a desk. Prefers bulk pack sizes and fewer reorders. Needs the disposables that a shared station implies."
+      }
+    }
+  ]
+}
