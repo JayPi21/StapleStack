@@ -19,10 +19,15 @@ make coffee. Compose the COMPLETE set of supplies that finishes the job, sized t
 specific buyer, choosing only from the contracted catalog you are given.
 
 Propose exactly TWO kits so the buyer chooses rather than accepts:
-  - Kit 0 "Essentials": the shortest list that genuinely makes the machine usable.
-    Nothing optional. If it is missing, the machine does not work.
+  - Kit 0 "Essentials": everything an ordinary buyer would call "day one" supplies —
+    the coffee itself, sized to the buyer, PLUS the sweetener and creamer that match
+    their stated preference (skip only a category the buyer's profile says they don't
+    use, e.g. they bring their own creamer). This is a real, usable kit, not just the
+    bare coffee — it must contain at least 3 line items whenever the catalog offers
+    a matching product in each category.
   - Kit 1 "Complete Station": everything in Essentials, plus the extras that make the
-    setup pleasant and fully stocked for the period.
+    setup pleasant and fully stocked for the period (drinkware, stirrers, extra
+    backstock, etc).
 Kit 1 must be a superset of Kit 0 and must cost more.
 
 Hard rules:

@@ -70,6 +70,15 @@ function cancelStream() {
   streamEnded = false;
 }
 
+/** Clamp a line's quantity, remembering the last positive value so unchecking
+ *  and re-checking restores it instead of resetting to 1. */
+function setLineQty(line, qty) {
+  const clamped = Math.max(0, Math.min(99, qty));
+  if (clamped === 0 && line.qty > 0) line._prevQty = line.qty;
+  if (clamped > 0) line._prevQty = undefined;
+  line.qty = clamped;
+}
+
 function addToCart(id, qty, savedTotal = 0) {
   commit((s) => {
     const existing = s.cart.find((line) => line.id === id);
@@ -224,7 +233,21 @@ function wireEvents() {
     commit((s) => {
       const kit = s.kits[s.selectedKit];
       const line = kit?.items.find((i) => i.id === id);
-      if (line) line.qty = Math.max(0, Math.min(99, line.qty + delta));
+      if (line) setLineQty(line, line.qty + delta);
+    });
+    markKitTiles();
+  });
+
+  // Left-hand checkbox: include/exclude a line without losing its quantity.
+  document.addEventListener("change", (event) => {
+    const toggle = event.target.closest("[data-toggle]");
+    if (!toggle) return;
+    const id = toggle.dataset.toggle;
+    commit((s) => {
+      const kit = s.kits[s.selectedKit];
+      const line = kit?.items.find((i) => i.id === id);
+      if (!line) return;
+      setLineQty(line, toggle.checked ? line._prevQty || 1 : 0);
     });
     markKitTiles();
   });

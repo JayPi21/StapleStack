@@ -357,7 +357,7 @@
 .kit-items { max-height: 42vh; overflow-y: auto; margin: 0 calc(var(--s2) * -1); padding: 0 var(--s2); }
 
 .kit-item {
-  display: grid; grid-template-columns: 42px 1fr auto; gap: var(--s3);
+  display: grid; grid-template-columns: 18px 42px 1fr auto; gap: var(--s3);
   align-items: center;
   padding: var(--s3) 0;
   border-bottom: 1px solid var(--line-soft);
@@ -365,6 +365,12 @@
 }
 .kit-item:last-child { border-bottom: 0; }
 .kit-item.is-removed { opacity: .4; }
+
+.kit-check {
+  width: 18px; height: 18px;
+  accent-color: var(--red);
+  cursor: pointer;
+}
 
 .kit-thumb { width: 42px; height: 42px; object-fit: contain; }
 .kit-item .nm { font-size: 13px; line-height: 1.35; font-weight: 500; }

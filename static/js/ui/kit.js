@@ -131,6 +131,7 @@ function patchLines(kit) {
     row.querySelector(".count").textContent = item.qty;
     row.querySelector("[data-step='-1']").disabled = removed;
     row.querySelector(".amt").innerHTML = amountHtml(item);
+    row.querySelector("[data-toggle]").checked = !removed;
   }
 }
 
@@ -149,6 +150,8 @@ function itemRow(item) {
   const removed = item.qty === 0;
   return `
     <li class="kit-item ${removed ? "is-removed" : ""}" data-line="${esc(item.id)}">
+      <input type="checkbox" class="kit-check" data-toggle="${esc(item.id)}"
+        aria-label="Include ${esc(item.name)} in kit" ${removed ? "" : "checked"}>
       <img class="kit-thumb" src="${esc(item.img)}" alt="" loading="lazy">
       <div>
         <div class="nm">${esc(item.name)}</div>

@@ -21,9 +21,11 @@ export function renderCatalog() {
   const kit = activeKit();
   // Once a kit is chosen the shopper only wants to see that kit.
   const focusIds = kit ? new Set(liveLines(kit).map((i) => i.id)) : null;
+  // Nothing to browse below the machines until a kit has been built at least once.
+  const hasKit = state.kits.length > 0;
 
   renderMachines(who, focusIds);
-  renderGroups(focusIds);
+  renderGroups(focusIds, hasKit);
   renderFilterNote(kit, focusIds);
 }
 
@@ -53,7 +55,13 @@ function renderMachines(who, focusIds) {
     .join("");
 }
 
-function renderGroups(focusIds) {
+function renderGroups(focusIds, hasKit) {
+  if (!hasKit) {
+    el("catalogRest").hidden = true;
+    el("restGroups").innerHTML = "";
+    return;
+  }
+
   const rest = state.catalog
     .filter((p) => p.category !== "machine")
     .filter((p) => !focusIds || focusIds.has(p.id));
