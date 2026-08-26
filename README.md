@@ -2,7 +2,7 @@
 
 *Add one item. Get the whole package, sized to you.*
 
-A buyer drops a coffee machine into a Staples cart. Gemini reads the cart and the
+A buyer drops a coffee machine into a Staples cart. Gemini reads the cart and the 
 buyer's profile, and composes the **complete kit** that finishes the job — sized to who
 is actually buying, and scoped to the contracted catalog.
 
