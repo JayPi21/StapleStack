@@ -2,8 +2,8 @@
   "personas": [
     {
       "id": "hari",
-      "label": "Hari Prasad",
-      "initials": "HP",
+      "label": "Hari",
+      "initials": "H",
       "account_type": "Individual",
       "account_line": "Personal account \u00b7 Home office",
       "headcount": 1,
@@ -23,8 +23,8 @@
     },
     {
       "id": "ravi",
-      "label": "Ravi Kumar",
-      "initials": "RK",
+      "label": "Ravi",
+      "initials": "R",
       "account_type": "Individual",
       "account_line": "Personal account \u00b7 Home office",
       "headcount": 1,
@@ -44,8 +44,8 @@
     },
     {
       "id": "umesh",
-      "label": "Umesh Nair",
-      "initials": "UN",
+      "label": "Umesh",
+      "initials": "U",
       "account_type": "Business",
       "account_line": "Nair & Co. \u00b7 StaplesAdvantage contract",
       "headcount": 12,
