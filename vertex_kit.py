@@ -13,7 +13,7 @@ import json
 import os
 import time
 
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "prj-spls-np-hackathon25-000")
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "prj-spls-np-hackathon31-000")
 LOCATION = os.environ.get("VERTEX_LOCATION", "global")
 MODEL_NAME = os.environ.get("VERTEX_MODEL", "gemini-3.7-flash")
 

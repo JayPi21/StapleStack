@@ -23,7 +23,7 @@ Open <http://localhost:8080>.
 
 ```bash
 gcloud auth application-default login
-gcloud config set project prj-spls-np-hackathon25-000
+gcloud config set project prj-spls-np-hackathon31-000
 ```
 
 The model badge in the Cart-to-Complete panel tells you which mode you are in:
@@ -40,7 +40,7 @@ on the first line of the stream.
 Override the defaults with env vars if needed:
 
 ```bash
-GOOGLE_CLOUD_PROJECT=...      # default prj-spls-np-hackathon25-000
+GOOGLE_CLOUD_PROJECT=...      # default prj-spls-np-hackathon31-000
 VERTEX_LOCATION=...           # default global
 VERTEX_MODEL=...              # default gemini-3.7-flash
 VERTEX_THINKING_LEVEL=...     # default low - see below
