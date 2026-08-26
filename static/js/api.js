@@ -6,6 +6,18 @@ export async function bootstrap() {
   return res.json();
 }
 
+/** Place a dummy order. The server records it so future kits for this buyer
+ *  can be personalised against what they actually bought. */
+export async function checkout({ personaId, cart }) {
+  const res = await fetch("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ persona_id: personaId, cart }),
+  });
+  if (!res.ok) throw new Error(`checkout failed (${res.status})`);
+  return res.json();
+}
+
 /**
  * Stream kit events. Calls onEvent for each parsed SSE frame.
  * Returns an abort handle so a persona switch can cancel an in-flight run.

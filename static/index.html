@@ -19,6 +19,14 @@
     </span>
   </a>
 
+  <div class="search-box">
+    <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true">
+      <circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <line x1="14" y1="14" x2="18.5" y2="18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <input type="search" id="searchInput" class="search-input" placeholder="Search coffee, ink, paper…" autocomplete="off">
+  </div>
+
   <div class="account">
     <span class="account-label">Signed in as</span>
     <div class="persona-switch" id="personaSwitch" role="tablist"></div>
@@ -61,6 +69,9 @@
       </div>
       <div id="cartLines" class="cart-lines"></div>
       <div class="cart-summary" id="cartSummary"></div>
+      <div class="cart-checkout">
+        <button class="primary-btn" id="checkoutBtn" disabled>Checkout</button>
+      </div>
     </section>
 
     <!-- The opt-in. Nothing about the kit renders until this is clicked. -->
@@ -84,6 +95,7 @@
       <div class="thinking" id="thinking" hidden>
         <div class="thinking-head">
           <span class="spinner" aria-hidden="true"></span>
+          <span class="ready-badge" id="readyBadge" aria-hidden="true" hidden>✓</span>
           <span id="thinkingStatus">Looking at your cart…</span>
         </div>
         <ul class="thought-list" id="thoughtList"></ul>
@@ -117,6 +129,47 @@
 
   </aside>
 </main>
+
+<div class="modal-overlay" id="paymentOverlay" hidden>
+  <div class="modal payment-modal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+    <button class="modal-close" id="paymentClose" aria-label="Close">&times;</button>
+
+    <div id="paymentForm">
+      <h2 id="paymentTitle">Payment</h2>
+      <p class="muted">Demo checkout — no real payment is processed.</p>
+
+      <div class="pay-total" id="payTotal"></div>
+
+      <label class="field">
+        <span>Card number</span>
+        <input type="text" id="cardNumber" inputmode="numeric" value="4242 4242 4242 4242" maxlength="19">
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Expiry</span>
+          <input type="text" id="cardExpiry" value="12/29" maxlength="5">
+        </label>
+        <label class="field">
+          <span>CVV</span>
+          <input type="text" id="cardCvv" value="123" maxlength="4">
+        </label>
+      </div>
+      <label class="field">
+        <span>Name on card</span>
+        <input type="text" id="cardName" placeholder="">
+      </label>
+
+      <button class="primary-btn" id="payBtn">Buy</button>
+    </div>
+
+    <div id="paymentDone" hidden>
+      <div class="pay-success-icon" aria-hidden="true">✓</div>
+      <h2>Order placed</h2>
+      <p class="muted" id="paymentDoneText"></p>
+      <button class="secondary-btn" id="paymentDoneClose">Done</button>
+    </div>
+  </div>
+</div>
 
 <script type="module" src="/static/js/main.js"></script>
 </body>

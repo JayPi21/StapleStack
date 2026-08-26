@@ -51,8 +51,11 @@ function renderThinking() {
   box.hidden = !visible;
   if (!visible) return;
 
+  const ready = state.phase === "selected";
+  box.classList.toggle("is-ready", ready);
   el("thinkingStatus").textContent = STATUS[state.phase] ?? "";
   box.querySelector(".spinner").hidden = state.phase !== "thinking";
+  el("readyBadge").hidden = !ready;
 
   el("thoughtList").innerHTML = state.thoughts
     .map((t) => `<li class="thought ${t.error ? "is-error" : ""}">${esc(t.text)}</li>`)

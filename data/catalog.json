@@ -10,6 +10,7 @@
       "img": "/static/img/machine-keurig-kexpress.jpg",
       "category": "machine",
       "brew_type": "single-serve pod",
+      "spec": "single-serve pod · serves 1",
       "serves": 1,
       "pack": "1 machine",
       "price": 109.99,
@@ -24,11 +25,27 @@
       "img": "/static/img/machine-bunn-vpr.jpg",
       "category": "machine",
       "brew_type": "drip carafe",
+      "spec": "drip carafe · serves 12",
       "serves": 12,
       "pack": "1 machine",
       "price": 627.29,
       "desc": "Commercial pourover brewer with upper and lower warmers, up to 100 cups per hour. Brews a 12-cup decanter in about 3 minutes. Requires ground coffee and 12-cup basket paper filters.",
       "tags": ["drip", "ground-coffee", "breakroom", "commercial", "needs-filters"]
+    },
+
+    {
+      "id": "MACHINE-PRINTER-AIO",
+      "name": "HP DeskJet 2855e Wireless Color All-in-One Printer, Scan, Copy, 3 Months Free Instant Ink, AI Enabled",
+      "short": "HP DeskJet 2855e",
+      "sku": "588S5A",
+      "img": "/static/img/machine-hp-deskjet-2855e.jpg",
+      "category": "machine",
+      "machine_type": "printer",
+      "spec": "wireless inkjet all-in-one · print, scan, copy",
+      "pack": "1 machine",
+      "price": 89.99,
+      "desc": "Wireless color inkjet all-in-one printer with print, scan and copy. Uses HP 67/67XL ink cartridges and standard multipurpose paper - a second equipment category that also needs a completed kit, not coffee.",
+      "tags": ["printer", "office", "wireless", "home-office"]
     },
 
     {
@@ -255,6 +272,121 @@
       "price": 12.39,
       "desc": "Disposable FSC-certified wooden stir sticks for a shared coffee station. One per cup.",
       "tags": ["breakroom", "bulk", "disposable"]
+    },
+
+    {
+      "id": "INK-HP67-BLACK",
+      "name": "HP 67 Black Standard Yield Ink Cartridge, Prints Up to 120 Pages",
+      "short": "HP 67 Black Ink",
+      "sku": "3YM56AN#140",
+      "img": "/static/img/ink-hp67-black-std.jpg",
+      "category": "ink",
+      "for_machine_type": "printer",
+      "pack": "1 cartridge",
+      "units_per_pack": 1,
+      "price": 22.89,
+      "desc": "Standard-yield black ink cartridge for HP DeskJet and OfficeJet printers using HP 67 ink. Prints up to 120 pages.",
+      "tags": ["ink", "printer", "hp67"]
+    },
+    {
+      "id": "INK-HP67-TRICOLOR",
+      "name": "HP 67 Tri-Color Standard Yield Ink Cartridge, Prints Up to 100 Pages",
+      "short": "HP 67 Tri-Color Ink",
+      "sku": "3YM55AN#140",
+      "img": "/static/img/ink-hp67-tricolor-std.jpg",
+      "category": "ink",
+      "for_machine_type": "printer",
+      "pack": "1 cartridge",
+      "units_per_pack": 1,
+      "price": 23.89,
+      "desc": "Standard-yield tri-color ink cartridge for HP DeskJet and OfficeJet printers using HP 67 ink. Prints up to 100 pages.",
+      "tags": ["ink", "printer", "hp67"]
+    },
+    {
+      "id": "INK-HP67XL-BLACK",
+      "name": "HP 67XL Black High Yield Ink Cartridge, Prints Up to 240 Pages",
+      "short": "HP 67XL Black Ink",
+      "sku": "3YM57AN#140",
+      "img": "/static/img/ink-hp67xl-black-hy.jpg",
+      "category": "ink",
+      "for_machine_type": "printer",
+      "pack": "1 cartridge",
+      "units_per_pack": 1,
+      "price": 35.89,
+      "desc": "High-yield black ink cartridge for HP DeskJet and OfficeJet printers using HP 67 ink. Prints up to 240 pages, about double the standard cartridge.",
+      "tags": ["ink", "printer", "hp67", "high-yield"]
+    },
+    {
+      "id": "INK-HP67XL-TRICOLOR",
+      "name": "HP 67XL Tri-Color High Yield Ink Cartridge, Prints Up to 200 Pages",
+      "short": "HP 67XL Tri-Color Ink",
+      "sku": "3YM58AN#140",
+      "img": "/static/img/ink-hp67xl-tricolor-hy.jpg",
+      "category": "ink",
+      "for_machine_type": "printer",
+      "pack": "1 cartridge",
+      "units_per_pack": 1,
+      "price": 36.89,
+      "desc": "High-yield tri-color ink cartridge for HP DeskJet and OfficeJet printers using HP 67 ink. Prints up to 200 pages, about double the standard cartridge.",
+      "tags": ["ink", "printer", "hp67", "high-yield"]
+    },
+
+    {
+      "id": "PAPER-HP-1REAM",
+      "name": "HP 8.5\" x 11\" Multipurpose Paper, 20 lbs., 96 Brightness, 500 Sheets/Ream",
+      "short": "HP Copy Paper 1 Ream",
+      "sku": "HPM1120",
+      "img": "/static/img/paper-hp-1ream.jpg",
+      "category": "paper",
+      "for_machine_type": "printer",
+      "pack": "1 ream (500 sheets)",
+      "units_per_pack": 500,
+      "price": 10.89,
+      "desc": "Standard 20 lb multipurpose copy paper, one ream, for everyday office printing.",
+      "tags": ["paper", "printer", "desk"]
+    },
+    {
+      "id": "PAPER-STAPLES-8REAM-CASE",
+      "name": "Staples Multiuse Copy Paper, 8.5\" x 11\", 20 lbs., 94 Brightness, 500 Sheets/Ream, 8 Reams/Carton",
+      "short": "Copy Paper 8-Ream Case",
+      "sku": "26860-CC",
+      "img": "/static/img/paper-staples-8ream-case.jpg",
+      "category": "paper",
+      "for_machine_type": "printer",
+      "pack": "8 reams (4000 sheets)",
+      "units_per_pack": 4000,
+      "price": 39.99,
+      "desc": "Case pack of standard multiuse copy paper, 8 reams, for a busy office that prints often.",
+      "tags": ["paper", "printer", "bulk"]
+    },
+    {
+      "id": "PAPER-PHOTO-HP-GLOSSY-50",
+      "name": "HP Everyday Glossy Photo Paper, 8.5\" x 11\", 50 Sheets/Pack",
+      "short": "HP Glossy Photo Paper 50ct",
+      "sku": "Q8723A",
+      "img": "/static/img/paper-photo-hp-glossy-50.jpg",
+      "category": "paper",
+      "for_machine_type": "printer",
+      "pack": "50 sheets",
+      "units_per_pack": 50,
+      "price": 21.99,
+      "desc": "Glossy photo-finish paper, only needed for printing photos, not everyday office documents.",
+      "tags": ["paper", "printer", "photo"]
+    },
+
+    {
+      "id": "LABELS-STAPLES-SHIP-1000",
+      "name": "Staples Laser/Inkjet Shipping Labels, 2\" x 4\", White, 10 Labels/Sheet, 1000 Labels/Box",
+      "short": "Shipping Labels 1000ct",
+      "sku": "18060",
+      "img": "/static/img/labels-staples-2x4-1000.jpg",
+      "category": "accessory",
+      "for_machine_type": "printer",
+      "pack": "1000 labels",
+      "units_per_pack": 1000,
+      "price": 35.99,
+      "desc": "Inkjet/laser-compatible self-adhesive shipping labels, 10 per sheet, for outgoing mail and packages.",
+      "tags": ["labels", "printer", "office"]
     }
   ]
 }

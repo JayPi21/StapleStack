@@ -35,6 +35,7 @@ def generate(
     cart_lines: list[dict[str, Any]],
     products: list[dict[str, Any]],
     scale: int | None,
+    history: str | None = None,
 ) -> Iterator[dict[str, Any]]:
     """Yield kit events, falling back to a local sample if Vertex is unavailable."""
     genai_client = client.get_client()
@@ -45,7 +46,7 @@ def generate(
 
     yield {"type": "source", "live": True}
 
-    text_prompt = prompt.build(persona, cart_lines, products, scale)
+    text_prompt = prompt.build(persona, cart_lines, products, scale, history)
     buffer = ""
     emitted = 0
 

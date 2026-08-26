@@ -7,6 +7,7 @@ const el = (id) => document.getElementById(id);
 
 export function renderCart() {
   const lines = el("cartLines");
+  el("checkoutBtn").disabled = state.cart.length === 0;
 
   if (!state.cart.length) {
     lines.innerHTML = `<p class="cart-empty">Nothing in your cart yet.</p>`;

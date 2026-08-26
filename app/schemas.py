@@ -14,3 +14,8 @@ class KitRequest(BaseModel):
     persona_id: str = Field(..., min_length=1, max_length=64)
     cart: list[CartLine] = Field(default_factory=list, max_length=100)
     scale: int | None = Field(None, ge=1, le=500)
+
+
+class CheckoutRequest(BaseModel):
+    persona_id: str = Field(..., min_length=1, max_length=64)
+    cart: list[CartLine] = Field(default_factory=list, max_length=100)

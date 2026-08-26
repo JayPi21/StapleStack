@@ -6,6 +6,7 @@ import { activeKit, commit, liveLines, kitTotals, persona, state, subscribe } fr
 import { markKitTiles, renderCatalog } from "./ui/catalog.js";
 import { renderCart } from "./ui/cart.js";
 import { renderKit } from "./ui/kit.js";
+import { renderPayment } from "./ui/payment.js";
 import { markSelectedPersona, renderPersonas } from "./ui/personas.js";
 
 // The model thinks first and then emits its whole answer in a burst. Draining the
@@ -39,6 +40,7 @@ function render() {
   renderCatalog();
   renderCart();
   renderKit();
+  renderPayment();
   markSelectedPersona();
 }
 
@@ -49,8 +51,10 @@ function selectPersona(id) {
   commit((s) => {
     s.personaId = id;
     s.cart = [];
+    s.search = "";
     resetKit(s);
   });
+  document.getElementById("searchInput").value = "";
 }
 
 function resetKit(s) {
@@ -90,6 +94,44 @@ function addToCart(id, qty, savedTotal = 0) {
       s.cart.push({ id, qty, isNew: true, savedTotal });
     }
   });
+}
+
+// ---------------------------------------------------------------- checkout
+
+function openCheckout() {
+  if (!state.cart.length) return;
+  commit((s) => {
+    s.payment = { open: true, submitting: false, result: null };
+  });
+}
+
+function closeCheckout() {
+  commit((s) => {
+    s.payment = { open: false, submitting: false, result: null };
+  });
+}
+
+async function submitPayment() {
+  commit((s) => {
+    s.payment.submitting = true;
+  });
+  const who = persona();
+  try {
+    const result = await api.checkout({
+      personaId: who.id,
+      cart: state.cart.map((line) => ({ id: line.id, qty: line.qty })),
+    });
+    commit((s) => {
+      s.payment.submitting = false;
+      s.payment.result = result;
+      if (result.ok) s.cart = [];
+    });
+  } catch {
+    commit((s) => {
+      s.payment.submitting = false;
+      s.payment.result = { ok: false };
+    });
+  }
 }
 
 // ---------------------------------------------------------------- kit stream
@@ -285,6 +327,22 @@ function wireEvents() {
     button.textContent = `Added — ${money(total)}`;
     button.disabled = true;
     setTimeout(() => commit(resetKit), 1400);
+  });
+
+  // Product search.
+  document.getElementById("searchInput").addEventListener("input", (event) => {
+    commit((s) => {
+      s.search = event.target.value;
+    });
+  });
+
+  // Checkout / dummy payment.
+  document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
+  document.getElementById("paymentClose").addEventListener("click", closeCheckout);
+  document.getElementById("paymentDoneClose").addEventListener("click", closeCheckout);
+  document.getElementById("payBtn").addEventListener("click", () => submitPayment());
+  document.getElementById("paymentOverlay").addEventListener("click", (event) => {
+    if (event.target.id === "paymentOverlay") closeCheckout();
   });
 }
 

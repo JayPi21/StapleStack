@@ -10,6 +10,7 @@ export const state = {
 
   personaId: null,
   cart: [],            // [{ id, qty, isNew }]
+  search: "",
 
   // Kit lifecycle: "idle" -> "thinking" -> "choosing" -> "selected"
   phase: "idle",
@@ -18,6 +19,8 @@ export const state = {
   skips: [],
   selectedKit: null,   // index into kits
   aiLive: true,
+
+  payment: { open: false, submitting: false, result: null },
 };
 
 export function subscribe(fn) {

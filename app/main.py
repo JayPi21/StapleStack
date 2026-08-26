@@ -11,9 +11,9 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import ai, catalog
+from . import ai, catalog, history
 from .config import settings
-from .schemas import KitRequest
+from .schemas import CheckoutRequest, KitRequest
 
 logging.basicConfig(
     level=settings.log_level.upper(),
@@ -50,9 +50,10 @@ def create_app() -> FastAPI:
     def kit_stream(request: KitRequest) -> StreamingResponse:
         persona = catalog.get_persona(request.persona_id)
         cart_lines = catalog.resolve_cart(request.cart)
+        past = history.summarize(request.persona_id)
 
         return StreamingResponse(
-            _events(persona, cart_lines, request.scale),
+            _events(persona, cart_lines, request.scale, past),
             media_type="text/event-stream",
             headers={
                 "Cache-Control": "no-cache",
@@ -61,6 +62,24 @@ def create_app() -> FastAPI:
             },
         )
 
+    @app.post("/api/checkout")
+    def checkout(request: CheckoutRequest) -> dict:
+        """Dummy 'buy' flow. No real payment happens - the only lasting effect
+        is recording what was bought, so future kits can be personalised
+        against real purchase history instead of just the static profile."""
+        lines = catalog.resolve_cart(request.cart)
+        if not lines:
+            return {"ok": False, "error": "Cart is empty."}
+
+        order = history.record_order(request.persona_id, lines)
+        total = sum(catalog.get_product(l["id"])["price"] * l["qty"] for l in lines)
+        return {
+            "ok": True,
+            "order_id": str(order["ts"]),
+            "item_count": len(lines),
+            "total": round(total, 2),
+        }
+
     return app
 
 
@@ -68,7 +87,9 @@ def _sse(event: dict) -> str:
     return f"data: {json.dumps(event)}\n\n"
 
 
-def _events(persona: dict, cart_lines: list[dict], scale: int | None) -> Iterator[str]:
+def _events(
+    persona: dict, cart_lines: list[dict], scale: int | None, past: str | None
+) -> Iterator[str]:
     """Decorate model events with catalog truth and frame them as SSE."""
     started = time.monotonic()
     seen_by_kit: dict[int, set[str]] = {}
@@ -76,7 +97,7 @@ def _events(persona: dict, cart_lines: list[dict], scale: int | None) -> Iterato
 
     yield _sse({"type": "start"})
     try:
-        for event in ai.generate(persona, cart_lines, catalog.products(), scale):
+        for event in ai.generate(persona, cart_lines, catalog.products(), scale, past):
             kind = event.get("type")
 
             if kind in ("item", "skip"):

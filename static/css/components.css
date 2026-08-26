@@ -45,6 +45,26 @@
   font-size: 11.5px; font-weight: 600; color: var(--ink-2);
 }
 
+/* ------------------------------------------------------------------ search */
+
+.search-box {
+  position: relative;
+  flex: 1; max-width: 360px; margin: 0 var(--s5);
+}
+.search-icon {
+  position: absolute; left: var(--s3); top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; color: var(--muted); pointer-events: none;
+}
+.search-input {
+  width: 100%; padding: 9px var(--s3) 9px 34px;
+  background: var(--wash); border: 1px solid var(--line); border-radius: var(--r-full);
+  font-size: 13.5px; font-family: var(--font); color: var(--ink);
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--red); background: var(--card); outline: none; }
+@media (max-width: 900px) { .search-box { display: none; } }
+
 /* ------------------------------------------------------------------ persona */
 
 .persona-switch {
@@ -99,6 +119,22 @@
   background: var(--red); color: #fff;
   border-radius: var(--r-full);
   font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+
+.demo-badge {
+  position: absolute; top: var(--s3); right: var(--s3);
+  padding: 2px var(--s2);
+  background: var(--wash); color: var(--ink-3);
+  border: 1px solid var(--line); border-radius: var(--r-full);
+  font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.demo-tag {
+  display: inline-block; margin-left: 4px;
+  padding: 0 5px;
+  background: var(--wash); color: var(--ink-3);
+  border: 1px solid var(--line); border-radius: var(--r-full);
+  font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+  vertical-align: middle;
 }
 
 .machine-art {
@@ -159,6 +195,17 @@
   font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
 }
 
+.rest-add {
+  flex: none;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-full);
+  color: var(--ink-2); font-size: 15px; font-weight: 600; line-height: 1;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.rest-add:hover:not(:disabled) { background: var(--red-tint); color: var(--red); border-color: var(--red); }
+.rest-add:disabled { background: var(--ok-tint); color: var(--ok); border-color: #cdeedd; cursor: default; }
+
 .kit-filter-note {
   display: flex; align-items: center; gap: var(--s2);
   margin-bottom: var(--s4); padding: var(--s3) var(--s4);
@@ -217,6 +264,8 @@
   color: var(--ink);
 }
 .sum-row.is-total strong { font-size: 19px; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+.cart-checkout { padding: 0 var(--s5) var(--s5); }
 
 /* ------------------------------------------------------------------ the opt-in */
 
@@ -300,6 +349,36 @@
 .thought::before { content: "✓"; flex: none; color: var(--ok); font-weight: 700; }
 .thought.is-error { color: var(--red-dark); }
 .thought.is-error::before { content: "!"; color: var(--red); }
+
+/* the ready state gets its own catchier treatment */
+.thinking.is-ready {
+  background: linear-gradient(158deg, #ffffff 0%, var(--ok-tint) 100%);
+  border: 1px solid #cdeedd; border-radius: var(--r-md);
+  animation: rise var(--slow) var(--ease) both;
+}
+.thinking.is-ready .thinking-head { font-size: 15.5px; font-weight: 700; color: var(--ok); }
+.thinking.is-ready .thought::before {
+  content: "✓";
+  display: grid; place-items: center;
+  width: 16px; height: 16px; margin-top: 1px;
+  background: var(--ok); color: #fff;
+  border-radius: var(--r-full);
+  font-size: 9px; font-weight: 700;
+}
+
+.ready-badge {
+  display: grid; place-items: center; flex: none;
+  width: 22px; height: 22px;
+  background: var(--ok); color: #fff;
+  border-radius: var(--r-full);
+  font-size: 12px; font-weight: 700;
+  animation: pop var(--slow) var(--ease) both;
+}
+@keyframes pop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(6px); }
@@ -438,3 +517,67 @@
 }
 
 .totals + .primary-btn { margin-top: var(--s4); }
+
+/* ------------------------------------------------------------------ payment modal */
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--s5);
+  background: rgba(20, 24, 29, .45);
+  animation: fade var(--fast) var(--ease) both;
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  position: relative;
+  width: 100%; max-width: 380px;
+  padding: var(--s6);
+  background: var(--card);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  animation: rise var(--slow) var(--ease) both;
+}
+
+.modal-close {
+  position: absolute; top: var(--s4); right: var(--s4);
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  background: var(--wash); border: 0; border-radius: var(--r-full);
+  color: var(--ink-3); font-size: 18px; line-height: 1;
+}
+.modal-close:hover { background: var(--line); color: var(--ink); }
+
+.payment-modal h2 { font-size: 18px; }
+.payment-modal .muted { margin-top: var(--s1); font-size: 12.5px; color: var(--ink-3); }
+
+.pay-total {
+  margin: var(--s4) 0; padding: var(--s4);
+  background: var(--wash); border-radius: var(--r-sm);
+  font-size: 26px; font-weight: 700; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.field { display: block; margin-top: var(--s3); font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.field span { display: block; margin-bottom: var(--s1); }
+.field input {
+  width: 100%; padding: 10px var(--s3);
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  font-size: 13.5px; font-family: var(--font); color: var(--ink);
+  background: var(--card);
+}
+.field input:focus { outline: 2px solid var(--red-ring); border-color: var(--red); }
+.field-row { display: flex; gap: var(--s3); }
+.field-row .field { flex: 1; }
+
+.payment-modal #payBtn { margin-top: var(--s5); }
+
+.pay-success-icon {
+  width: 48px; height: 48px; margin: 0 auto var(--s4);
+  display: grid; place-items: center;
+  background: var(--ok-tint); color: var(--ok);
+  border-radius: var(--r-full);
+  font-size: 24px; font-weight: 700;
+}
+#paymentDone { text-align: center; }
+#paymentDone .secondary-btn { margin-top: var(--s5); width: 100%; }

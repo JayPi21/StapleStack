@@ -117,11 +117,58 @@ SAMPLES: dict[str, dict[str, Any]] = {
     },
 }
 
+# Used instead of a persona sample whenever the cart holds the printer, not a
+# coffee machine - the persona samples above are coffee-only and would ship
+# K-Cups to a buyer who never asked for coffee.
+PRINTER_SAMPLE: dict[str, Any] = {
+    "thoughts": [
+        "This is an inkjet printer, so it needs ink cartridges and paper, not coffee.",
+        "Black and tri-color cover normal office printing.",
+        "One ream is enough to get started without over-buying.",
+    ],
+    "kits": [
+        (
+            "Printer Essentials",
+            "Ink and paper to get the printer working right away.",
+            [
+                ("INK-HP67-BLACK", 1, "black ink for everyday documents"),
+                ("INK-HP67-TRICOLOR", 1, "color ink for everyday documents"),
+                ("PAPER-HP-1REAM", 1, "one ream to start printing"),
+            ],
+        ),
+        (
+            "Complete Printer Station",
+            "Everything in Essentials plus backup high-yield ink, bulk paper, and shipping labels.",
+            [
+                ("INK-HP67-BLACK", 1, "black ink for everyday documents"),
+                ("INK-HP67-TRICOLOR", 1, "color ink for everyday documents"),
+                ("PAPER-HP-1REAM", 1, "one ream to start printing"),
+                ("INK-HP67XL-BLACK", 1, "high-yield backup black ink"),
+                ("INK-HP67XL-TRICOLOR", 1, "high-yield backup color ink"),
+                ("PAPER-STAPLES-8REAM-CASE", 1, "bulk paper so you don't run out"),
+                ("LABELS-STAPLES-SHIP-1000", 1, "labels for outgoing mail"),
+            ],
+        ),
+    ],
+    "skips": [
+        ("PAPER-PHOTO-HP-GLOSSY-50", "glossy stock, not needed for everyday documents"),
+    ],
+}
+
 
 def events(persona: dict[str, Any], cart_lines: list[dict[str, Any]], scale: int | None) -> Iterator[dict]:
+    owned = {line["id"] for line in cart_lines}
+    if "MACHINE-PRINTER-AIO" in owned:
+        yield from _run(PRINTER_SAMPLE, cart_lines, factor=1.0)
+        return
+
     sample = SAMPLES.get(persona["id"]) or next(iter(SAMPLES.values()))
     base = persona["profile"]["people_served"] or 1
     factor = max(1.0, (scale or base) / base)
+    yield from _run(sample, cart_lines, factor)
+
+
+def _run(sample: dict[str, Any], cart_lines: list[dict[str, Any]], factor: float) -> Iterator[dict]:
     owned = {line["id"] for line in cart_lines}
 
     for text in sample["thoughts"]:
