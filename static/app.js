@@ -19,7 +19,40 @@ const state = {
   streaming: false,
   abort: null,
   timerId: null,
+  queue: [],         // events waiting to be rendered
+  draining: false,
+  streamEnded: false,
 };
+
+// The model thinks first, then emits its whole answer in a burst. Rendering that
+// raw would flash every line on screen at once, so events are drained at a
+// readable cadence instead. Nothing is invented - only the pacing is ours.
+const PACE = { thought: 420, kit: 320, item: 210, skip: 170 };
+
+function enqueue(evt) {
+  state.queue.push(evt);
+  if (!state.draining) drainQueue();
+}
+
+function drainQueue() {
+  const evt = state.queue.shift();
+  if (!evt) {
+    state.draining = false;
+    if (state.streamEnded) finishRun();
+    return;
+  }
+  state.draining = true;
+  handleEvent(evt);
+  setTimeout(drainQueue, PACE[evt.type] ?? 0);
+}
+
+function finishRun() {
+  clearInterval(state.timerId);
+  state.streaming = false;
+  $("modelBadge").classList.remove("thinking");
+  document.querySelector(".caret")?.parentElement.remove();
+  $("addAllBtn").disabled = state.kit.length === 0;
+}
 
 // ---------------------------------------------------------------- boot
 
@@ -199,6 +232,9 @@ function stopStream() {
   if (state.abort) state.abort.abort();
   state.abort = null;
   state.streaming = false;
+  state.queue = [];
+  state.draining = false;
+  state.streamEnded = false;
   clearInterval(state.timerId);
 }
 
@@ -228,6 +264,9 @@ async function generateKit() {
 
   state.abort = new AbortController();
   state.streaming = true;
+  state.queue = [];
+  state.draining = false;
+  state.streamEnded = false;
 
   let res;
   try {
@@ -265,13 +304,12 @@ async function generateKit() {
     while ((nl = buf.indexOf("\n\n")) !== -1) {
       const frame = buf.slice(0, nl).trim();
       buf = buf.slice(nl + 2);
-      if (frame.startsWith("data:")) handleEvent(JSON.parse(frame.slice(5).trim()));
+      if (frame.startsWith("data:")) enqueue(JSON.parse(frame.slice(5).trim()));
     }
   }
 
-  clearInterval(state.timerId);
-  state.streaming = false;
-  badge.classList.remove("thinking");
+  state.streamEnded = true;
+  if (!state.draining) finishRun();
 }
 
 function pushThought(text, isError, detail) {

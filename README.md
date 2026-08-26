@@ -40,10 +40,25 @@ on the first line of the stream.
 Override the defaults with env vars if needed:
 
 ```bash
-GOOGLE_CLOUD_PROJECT=...   # default prj-spls-np-hackathon25-000
-VERTEX_LOCATION=...        # default global
-VERTEX_MODEL=...           # default gemini-3.7-flash
+GOOGLE_CLOUD_PROJECT=...      # default prj-spls-np-hackathon25-000
+VERTEX_LOCATION=...           # default global
+VERTEX_MODEL=...              # default gemini-3.7-flash
+VERTEX_THINKING_LEVEL=...     # default low - see below
 ```
+
+### Why `thinking_level=low`
+
+Gemini 3 thinks before it emits a single token, and that wait is dead air on
+screen. Measured on this prompt:
+
+| thinking_level | time to first token | total |
+|---|---|---|
+| `high` | 13.9s | 15.9s |
+| `low` | 6.3s | 8.7s |
+
+Kit quality is indistinguishable between the two, so the demo runs `low`. This
+needs the current `google-genai` SDK — the older `vertexai.generative_models`
+SDK exposes no thinking controls at all (and is deprecated, removal June 2026).
 
 ---
 
@@ -87,7 +102,11 @@ SSE. Line-delimited JSON can't half-parse, so the stream stays robust under a li
 Four things make this legible to an audience:
 
 1. **Reasoning arrives first, one line at a time**, with a blinking caret and a ticking
-   latency counter. It visibly takes time, because it is really happening.
+   latency counter showing real elapsed time. Note that the model does its thinking up
+   front and then emits the whole answer in a ~2s burst, so the browser drains the
+   event queue at a readable cadence (`PACE` in `static/app.js`) instead of flashing
+   thirteen lines on screen at once. The content and the timer are the model's; only
+   the spacing between lines is ours.
 2. **Catalog tiles light up `IN KIT`** as the model picks them — you watch it reach into
    the same catalog that's on screen.
 3. **Skips are shown, with reasons.** A pod machine takes no paper filter; a sugar-free
@@ -139,3 +158,7 @@ slider from 12 to 25 and let it regenerate live for the closing shot.
 
 If you want one continuous take instead, run the three buyers back to back without
 touching anything else — the reset-on-switch behaviour keeps it clean.
+
+Expect roughly 10 seconds per kit end to end, of which the first ~6 is the model
+thinking before it says anything. That gap is the one place the demo looks idle — the
+blinking caret and the ticking counter carry it, so don't cut away during it.
