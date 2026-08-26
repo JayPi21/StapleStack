@@ -92,7 +92,7 @@ cart summary — it exists only because the whole kit was taken together.
 
 ## The three buyers
 
-| | **Hari Prasad** | **Ravi Kumar** | **Umesh Nair** |
+| | **Hari** | **Ravi** | **Umesh** |
 |---|---|---|---|
 | Account | Individual | Individual | Business (Nair & Co.) |
 | Serves | 1 person | 1 person | 12 people |
